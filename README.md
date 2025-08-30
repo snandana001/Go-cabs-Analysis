@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Ride Sharing Revenue & Discount Analysis
 Project Overview
 
@@ -184,3 +185,6 @@ If you want to explore the database directly, you can use pgAdmin or any other P
 The visualizations in Apache Superset provide a clear, interactive way to analyze the data and identify trends in the ride-sharing platform’s performance.
 
 Feel free to adjust or enhance the visualizations and queries to further explore other metrics like Customer Lifetime Value (CLV), Customer Acquisition Cost (CAC), or other key business insights!
+=======
+# Go-cabs-Analysis
+>>>>>>> 4e1a3350c760db9f7b128ebd641a3e5e72b35ec7
