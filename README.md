@@ -1,187 +1,96 @@
-<<<<<<< HEAD
-Ride Sharing Revenue & Discount Analysis
-Project Overview
+ # Taxi Analytics Project
 
-This project analyzes a ride-sharing platform's data to understand the impact of promotional discounts on revenue, ride frequency, and customer behavior. Data was generated using Python, stored in a PostgreSQL database, and visualized using Apache Superset. The primary focus was on identifying trends in Customer Lifetime Value (CLV), Customer Acquisition Cost (CAC), discount schemes, and vehicle popularity.
+Welcome to the **Taxi Analytics** project! This project is aimed at analyzing ride-hailing data for understanding trends in customer lifetime value (CLV), customer acquisition cost (CAC), driver earnings, and other key performance metrics.
 
-Table of Contents
+## Project Overview
 
-Project Workflow
+This project involves:
 
-Data Generation
+- **Data generation**: Simulating a large dataset of users, drivers, and rides.
+- **Data storage**: Storing the data in a PostgreSQL database.
+- **Data visualization**: Using Apache Superset to visualize the data and extract key insights.
+- **Analysis**: Identifying trends in customer lifetime value (CLV), acquisition cost (CAC), vehicle type popularity, and more.
 
-SQL Queries
+## Technologies Used
 
-Data Visualizations
+- **Python**: For generating synthetic data using the `Faker` library.
+- **PostgreSQL**: For storing the data in a relational database.
+- **Apache Superset**: For data visualization and dashboard creation.
+- **Git**: For version control.
 
-How to Run the Project
+## Getting Started
 
-License
+To get started with the project, follow these steps:
 
-Project Workflow
+1. Clone the repository:
 
-The project consists of three main parts:
+    ```bash
+    git clone https://github.com/snandana001/Go-cabs-Analysis.git
+    ```
 
-Data Generation:
+2. Navigate to the project directory:
 
-Python scripts were used to generate synthetic datasets for users, drivers, rides, and promo codes. These datasets were designed to simulate real-world behavior on a ride-sharing platform.
+    ```bash
+    cd taxi_analytics
+    ```
 
-Data Storage:
+3. Create a virtual environment and activate it:
 
-The generated data was stored in a PostgreSQL database, structured across multiple tables such as users, drivers, rides, and promo_codes.
+    ```bash
+    python -m venv venv
+    .\venv\Scripts\Activate.ps1  # On Windows
+    ```
 
-Data Analysis & Visualization:
+4. Install the necessary dependencies:
 
-SQL queries were written to analyze the impact of promotional discounts, vehicle types, and driver earnings.
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-Apache Superset was used to create interactive dashboards and visualizations to identify trends in CLV, CAC, and revenue impact based on promo code usage.
+5. Set up the database and run the Python script to generate data:
 
-Data Generation
-Overview
+    ```bash
+    python generate_data.py
+    ```
 
-A Python script was used to generate synthetic data that mimics a real-world ride-sharing platform:
+6. Visualize the data using Apache Superset.
 
-Users: Generated 5,000 user records with attributes like signup channel, acquisition cost (CAC), promo code usage, and city.
+## Features
 
-Drivers: Generated 1,000 driver records with attributes like name, vehicle type, rating, and city.
+- **Data Generation**: Automatically generates ride, user, and driver data for analysis.
+- **Database Integration**: Data is stored in PostgreSQL for easy access.
+- **Visualization**: Create insightful dashboards in Superset.
 
-Rides: Generated 30,000 rides with details like ride fare, discount amount, vehicle type, ride status, and origin/destination coordinates.
+## Data Model
 
-Promo Codes: Defined a set of promo codes with discount percentages.
+The following tables are created in the PostgreSQL database:
 
-Python Libraries Used:
+- **Users**: Stores information about users who booked rides.
+- **Drivers**: Stores information about the drivers and their ratings.
+- **Rides**: Contains ride data, including fares and statuses.
+- **Marketing Campaigns**: Tracks marketing campaigns used for customer acquisition.
+- **Promo Codes**: Stores discount promo codes used by customers.
 
-Faker: For generating fake names, dates, cities, and other random data.
+## Insights and Trends
 
-NumPy: For generating numerical data (e.g., fare amounts, discount percentages).
+The project includes analysis of various trends:
 
-psycopg2: For inserting data into the PostgreSQL database.
+- **Customer Lifetime Value (CLV)**
+- **Customer Acquisition Cost (CAC)**
+- **Number of Rides per Driver**
+- **Earnings per Driver**
+- **Vehicle Type Popularity**
+- **Discount Impact on Fare and Frequency**
 
-To run the data generation:
+## Future Improvements
 
-python data_generation.py
+- Integrate machine learning models to predict customer churn.
+- Expand the dataset to include more attributes for analysis.
+- Improve the Superset dashboard with more detailed metrics.
 
+## License
 
-This script connects to a PostgreSQL database, creates the necessary tables, and populates them with the synthetic data.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-SQL Queries
-
-Once the data is stored in PostgreSQL, the following SQL queries are used to analyze the impact of discounts, ride frequency, and other trends:
-
-1. Discount Impact on Ride Frequency & Revenue
-SELECT 
-    p.discount_percent,
-    COUNT(r.ride_id) AS total_rides,
-    ROUND(AVG(r.fare_amount), 2) AS avg_fare_before_discount,
-    ROUND(AVG(r.fare_amount - r.discount_amount), 2) AS avg_fare_after_discount,
-    ROUND(SUM(r.fare_amount), 2) AS total_fare_before_discount,
-    ROUND(SUM(r.fare_amount - r.discount_amount), 2) AS total_fare_after_discount,
-    ROUND(COUNT(r.ride_id) * 100.0 / (SELECT COUNT(*) FROM rides WHERE ride_status = 'completed'), 2) AS percentage_of_total_rides
-FROM 
-    users u
-JOIN 
-    promo_codes p ON u.promo_code_used = p.promo_code
-JOIN 
-    rides r ON u.user_id = r.user_id
-WHERE 
-    r.ride_status = 'completed'
-GROUP BY 
-    p.discount_percent
-ORDER BY 
-    p.discount_percent DESC;
-
-2. Revenue by Discount Percentage
-SELECT 
-    p.discount_percent,
-    COUNT(r.ride_id) AS total_rides,
-    ROUND(SUM(r.fare_amount), 2) AS total_revenue
-FROM 
-    users u
-JOIN 
-    promo_codes p ON u.promo_code_used = p.promo_code
-JOIN 
-    rides r ON u.user_id = r.user_id
-WHERE 
-    r.ride_status = 'completed'
-GROUP BY 
-    p.discount_percent;
-
-3. Vehicle Type Popularity
-SELECT 
-    vehicle_type, 
-    COUNT(ride_id) AS total_rides
-FROM 
-    rides
-WHERE 
-    ride_status = 'completed'
-GROUP BY 
-    vehicle_type
-ORDER BY 
-    total_rides DESC;
-
-Data Visualizations
-
-Once the SQL queries were written, the results were visualized using Apache Superset. Key visualizations include:
-
-1. Rides by Discount Percentage
-
-A bar chart to compare the number of rides for each discount percentage.
-
-2. Revenue by Discount Percentage
-
-A bar chart showing the total revenue for each discount level.
-
-3. Vehicle Type Popularity
-
-A pie chart showing the distribution of rides taken in each vehicle type (Economy, Premium, SUV).
-
-4. Discount Impact on Average Fare
-
-A line chart comparing the average fare before and after discount for each discount percentage.
-
-These visualizations helped to identify trends like:
-
-The impact of discount percentages on ride frequency and total revenue.
-
-The popularity of vehicle types and driver earnings across different discount campaigns.
-
-How to Run the Project
-1. Install Dependencies
-
-Ensure that you have Python 3.x installed. Install the required dependencies by running:
-
-pip install -r requirements.txt
-
-2. Set Up PostgreSQL
-
-Make sure PostgreSQL is installed and running. Create a database and update the DB_PARAMS in the data_generation.py script with your PostgreSQL credentials (e.g., username, password, database name).
-
-3. Generate the Data
-
-Run the following Python script to generate and insert synthetic data into your PostgreSQL database:
-
-python data_generation.py
-
-4. Set Up Apache Superset
-
-Install and configure Apache Superset (follow this guide
-).
-
-Connect Superset to your PostgreSQL database and import the relevant tables (users, drivers, rides, promo_codes, marketing_campaigns).
-
-Use Superset’s SQL Lab to run the SQL queries for analysis.
-
-Create visualizations and dashboards based on the results.
-
-License
-
-This project is licensed under the MIT License - see the LICENSE
- file for details.
-
-Final Notes
-
-If you want to explore the database directly, you can use pgAdmin or any other PostgreSQL client.
-
-The visualizations in Apache Superset provide a clear, interactive way to analyze the data and identify trends in the ride-sharing platform’s performance.
 
 
