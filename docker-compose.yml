@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: superset
+      POSTGRES_PASSWORD: superset
+      POSTGRES_DB: superset_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  superset:
+    build: .
+    
+    ports:
+      - "8088:8088"
+    depends_on:
+      - postgres
+    environment:
+      SUPERSET_DATABASE_URI: postgresql+psycopg2://superset:superset@postgres:5432/superset_db
+    volumes:
+      - superset_home:/app/superset_home
+      - ./superset_config.py:/app/pythonpath/superset_config.py
+    command: >
+      /bin/sh -c "
+      superset db upgrade &&
+      superset init &&
+      superset fab create-admin --username admin --firstname Admin --lastname User --email admin@example.com --password admin &&
+      superset run -p 8088 -h 0.0.0.0 --with-threads --reload --debugger
+      "
+
+volumes:
+  pgdata:
+  superset_home:
